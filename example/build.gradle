@@ -1,13 +1,8 @@
-apply plugin: 'android'
-
-dependencies {
-    compile 'com.android.support:support-v4:19.+'
-    compile project(':library')
-}
+apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 19
-    buildToolsVersion "19.1.0"
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
 
     testBuildType "debug"
 
@@ -24,7 +19,7 @@ android {
         versionCode 12
         versionName "2.0"
         minSdkVersion 16
-        targetSdkVersion 16
+        targetSdkVersion 24
 
         testInstrumentationRunner "android.test.InstrumentationTestRunner"
         testHandleProfiling false
@@ -32,15 +27,26 @@ android {
         buildConfigField "boolean", "EXTRA_LOGS", "false"
 
         resConfig "en"
-        resConfigs "nodpi", "hdpi"
+    }
+
+    splits {
+        density {
+            enable true
+            reset()
+            include "nodpi", "hdpi"
+        }
     }
 
     buildTypes {
         debug {
-            //packageNameSuffix ".debug"
+            applicationIdSuffix ".debug"
+            versionNameSuffix "-DEBUG"
             signingConfig signingConfigs.myConfig
 
-            buildConfigField "boolean", "EXTRA_LOGS", "false"
+            buildConfigField "boolean", "EXTRA_LOGS", "true"
+
+            minifyEnabled true
+            shrinkResources true
         }
     }
 
@@ -67,4 +73,9 @@ android {
         // optional path to report (default will be lint-results.html in the builddir)
         htmlOutput file("lint-report.html")
     }
+}
+
+dependencies {
+    compile 'com.android.support:support-v4:24.1.1'
+    compile project(':library')
 }

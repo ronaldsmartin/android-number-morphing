@@ -1,17 +1,15 @@
 buildscript {
     repositories {
-        mavenCentral()
+        jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.13.+'
-//        classpath 'net.ltgt.gradle:gradle-errorprone-plugin:latest.release'
+        classpath 'com.android.tools.build:gradle:2.1.2'
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
     }
 }
 
-subprojects { project ->
-//	apply plugin: 'errorprone'
-
-	repositories {
-	    mavenCentral()
-	}
+ext {
+    compileSdkVersion = 24
+    buildToolsVersion = "24.0.1"
 }
