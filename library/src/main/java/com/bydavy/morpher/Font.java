@@ -9,7 +9,7 @@ import android.graphics.Canvas;
  */
 public interface Font {
 
-	public static final float REFERENCE_HEIGHT = 1;
+	float REFERENCE_HEIGHT = 1;
 
 	/**
 	 * Test if the font supports the character
@@ -23,7 +23,7 @@ public interface Font {
 	 * Returns the number of points defining each glyph. This is a constant per font
 	 * in order to simplify morphing.
 	 *
-	 * @return
+	 * @return the number of points defining each glyph
 	 */
 	int getPointsCount();
 
@@ -60,7 +60,7 @@ public interface Font {
 	 * Maybe in the future I will push it to the glyph definition.
 	 * <p/>
 	 *
-	 * @return
+	 * @return the space that should be added between each character
 	 */
 	float getGlyphSeparatorWidth();
 

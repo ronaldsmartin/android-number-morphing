@@ -13,12 +13,10 @@ import com.bydavy.morpher.font.DFont;
 
 public class DigitalClockView extends View {
 
+	private static final int DEFAULT_FONT_SIZE = 170;
+	private static final int DEFAULT_FONT_THICKNESS = 10;
+	private static final Font DEFAULT_FONT = new DFont(DEFAULT_FONT_SIZE, DEFAULT_FONT_THICKNESS);
 	public static int DEFAULT_MORPHING_DURATION = 300;
-
-	public static final int DEFAULT_FONT_SIZE = 170;
-	public static final int DEFAULT_FONT_THICKNESS = 10;
-	public static final Font DEFAULT_FONT = new DFont(DEFAULT_FONT_SIZE, DEFAULT_FONT_THICKNESS);
-
 	private Font mFont;
 	private int mMorphingDurationInMs;
 
@@ -61,6 +59,22 @@ public class DigitalClockView extends View {
 		init(context, attrs, defStyle);
 	}
 
+	private static boolean colonCharChangedPosition(String previousTime, String time) {
+		if (previousTime.length() != time.length()) {
+			return true;
+		}
+
+		final int length = previousTime.length();
+		for (int i = 0; i < length; i++) {
+			char previousC = previousTime.charAt(i);
+			if (previousC == ':' && previousC != time.charAt(i)) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	private void init(Context context, AttributeSet attrs, int defStyle) {
 		if (attrs != null) {
 			TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.DigitalClockView, 0, 0);
@@ -87,11 +101,13 @@ public class DigitalClockView extends View {
 	}
 
 	public void setTime(String time, boolean shouldMorph) {
+		if (time == null) return;
+
 		// Update only if time changed
-		if (time == mText || (mText != null && mText.equals(time))) return;
+		if (mText != null && mText.equals(time)) return;
 
 		// Changing text length is not supported (at least not "morphed")
-		if (mText == null || (mPreviousText != null && time != null && (mPreviousText.length() != time.length() || colonCharChangedPosition(mPreviousText, time)))) {
+		if (mText == null || (mPreviousText != null && (mPreviousText.length() != time.length() || colonCharChangedPosition(mPreviousText, time)))) {
 			shouldMorph = false;
 		}
 
@@ -197,24 +213,12 @@ public class DigitalClockView extends View {
 		}
 	}
 
-	public void setMorphingDuration(int durationInMs) {
-		mMorphingDurationInMs = durationInMs;
-	}
-
 	public int getMorphingDuration() {
 		return mMorphingDurationInMs;
 	}
 
-	public void setFont(Font font) {
-		//if (mFont != font) {
-		mFont = font;
-		cancelMorphingAnimation();
-
-		// Force text changed to repopulate internal arrays
-		String time = mText;
-		mText = null;
-		setTime(time);
-		//}
+	public void setMorphingDuration(int durationInMs) {
+		mMorphingDurationInMs = durationInMs;
 	}
 
 	/*public void setFontColor(int color) {
@@ -246,6 +250,18 @@ public class DigitalClockView extends View {
 			//invalidate();
 		}
 	}*/
+
+	public void setFont(Font font) {
+		//if (mFont != font) {
+		mFont = font;
+		cancelMorphingAnimation();
+
+		// Force text changed to repopulate internal arrays
+		String time = mText;
+		mText = null;
+		setTime(time);
+		//}
+	}
 
 	@Override
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
@@ -333,6 +349,11 @@ public class DigitalClockView extends View {
 	}
 
 	@SuppressWarnings("unused")
+	public float getMorphingPercent() {
+		return mMorphingPercent;
+	}
+
+	@SuppressWarnings("unused")
 	public void setMorphingPercent(float percent) {
 		mMorphingPercent = percent;
 
@@ -340,26 +361,5 @@ public class DigitalClockView extends View {
 			requestLayout();
 		}
 		invalidate();
-	}
-
-	@SuppressWarnings("unused")
-	public float getMorphingPercent() {
-		return mMorphingPercent;
-	}
-
-	private static boolean colonCharChangedPosition(String previousTime, String time) {
-		if (previousTime.length() != time.length()) {
-			return true;
-		}
-
-		final int length = previousTime.length();
-		for (int i = 0; i < length; i++) {
-			char previousC = previousTime.charAt(i);
-			if (previousC == ':' && previousC != time.charAt(i)) {
-				return true;
-			}
-		}
-
-		return false;
 	}
 }
